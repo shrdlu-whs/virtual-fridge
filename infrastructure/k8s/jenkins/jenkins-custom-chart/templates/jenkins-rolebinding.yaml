@@ -1,0 +1,56 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: jenkins-admin
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: jenkins
+subjects:
+  - kind: ServiceAccount
+    name: jenkins-serviceaccount
+    namespace: jenkins
+#
+#---
+#apiVersion: rbac.authorization.k8s.io/v1beta1
+#kind: RoleBinding
+#metadata:
+#  name: jenkins-develop
+#  namespace: develop
+#roleRef:
+#  apiGroup: rbac.authorization.k8s.io
+#  kind: ClusterRole
+#  name: jenkins
+#subjects:
+#  - kind: ServiceAccount
+#    name: jenkins
+#    namespace: default
+#
+#---
+#apiVersion: rbac.authorization.k8s.io/v1beta1
+#kind: RoleBinding
+#metadata:
+#  name: jenkins-master
+#  namespace: master
+#roleRef:
+#  apiGroup: rbac.authorization.k8s.io
+#  kind: ClusterRole
+#  name: jenkins
+#subjects:
+#  - kind: ServiceAccount
+#    name: jenkins
+#    namespace: default
+#---
+#apiVersion: rbac.authorization.k8s.io/v1beta1
+#kind: ClusterRoleBinding
+#metadata:
+#  name: jenkins-namespaces
+#roleRef:
+#  apiGroup: rbac.authorization.k8s.io
+#  kind: ClusterRole
+#  name: create-namespaces
+#subjects:
+#  - kind: ServiceAccount
+#    name: jenkins
+#    namespace: default

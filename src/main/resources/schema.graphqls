@@ -1,0 +1,58 @@
+# queries --------------------------------------------------------------
+type Query {
+    category:[category]
+    products:[product]
+    shoppingLists:[shoppingList]
+    recipes:[recipe]
+
+    product(id: Long!):product
+    shoppingList(id: Long!):shoppingList
+    recipe(id: Long!):recipe
+
+    # graphiql queries ---------------------------
+    productsI(userId: String!):[product]
+    shoppingListsI(userId: String!):[shoppingList]
+    recipesI(userId: String!):[recipe]
+
+    productI(userId: String!, id: Long!):product
+    shoppingListI(userId: String!, id: Long!):shoppingList
+    recipeI(userId: String!, id: Long!):recipe
+}
+
+# mutations
+type Mutation{
+    # Category mutations
+    createCategory(input: createCategoryInput!): category! #
+    updateCategory(input: updateCategoryInput!): category! #
+    deleteCategory(id: Long!): Long! #
+
+    # Product mutations
+    createProduct(input: createProductInput!): product! #
+    updateProduct(input: updateProductInput!): product! #
+    deleteProduct(id: Long!): Long! #
+
+    # Shopping list mutations
+    createShoppingList(input: createShoppingListInput!): shoppingList! #
+    updateShoppingList(input: updateShoppingListInput!): shoppingList! #
+    deleteShoppingList(id: Long!): Long! #
+
+    # Recipe Mutations
+    createRecipe(input: createRecipeInput!): recipe!
+    updateRecipe(input: updateRecipeInput!): recipe!
+    deleteRecipe(id: Long!): Long!
+
+
+
+    # graphiql tests -------------------------------------------------------------
+    createProductI(input: createProductInput!, userId:String!): product!
+    updateProductI(input: updateProductInput!, userId:String!): product!
+    deleteProductI(id: Long!, userId:String!): Long!
+
+    createShoppingListI(input: createShoppingListInput!, userId:String!): shoppingList!
+    updateShoppingListI(input: updateShoppingListInput!, userId:String!): shoppingList!
+    deleteShoppingListI(id: Long!, userId:String!): Long!
+
+    createRecipeI(input: createRecipeInput!, userId:String!): recipe!
+    updateRecipeI(input: updateRecipeInput!, userId:String!): recipe!
+    deleteRecipeI(id: Long!, userId:String!): Long!
+}

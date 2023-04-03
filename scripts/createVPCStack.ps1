@@ -1,0 +1,1 @@
+aws cloudformation create-stack --stack-name VPCStackTeam1 --template-body file://amazon-eks-vpc-private-subnets.yaml

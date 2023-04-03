@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test object of shoppinglist 1`] = `
+Object {
+  "created": 2021-02-14T15:27:16.098Z,
+  "items": Array [],
+  "name": "Shopping",
+}
+`;

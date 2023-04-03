@@ -1,0 +1,7 @@
+scalar Long
+scalar LocalDateTime
+enum difficulty{
+    easy,
+    intermediate,
+    difficult
+}

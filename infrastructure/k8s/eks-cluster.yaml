@@ -1,0 +1,78 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: fridge-cluster-team1
+  region: eu-central-1
+
+vpc:
+  id: "vpc-0a9dcdb9af869f601"
+  subnets:
+    public:
+      eu-central-1a:
+        id: "subnet-0ff2c1654e9c3e118"
+      eu-central-1b:
+        id: "subnet-08fdcd3c279e994cb"
+    private:
+      eu-central-1a:
+        id: "subnet-0d8c73918237e568b"
+      eu-central-1b:
+        id: "subnet-0d903e263e8843b11"
+secretsEncryption:
+  keyARN: "arn:aws:kms:eu-central-1:484755436758:key/246cf0b0-f85d-43b3-8fe8-704fbc27ce64"
+cloudWatch:
+  clusterLogging:
+    enableTypes:
+      - "audit"
+      - "authenticator"
+#For a short description see https://eksctl.io/usage/iamserviceaccounts/
+iam:
+  withOIDC: true
+  serviceAccounts:
+    #Service Account for Jenkins Agent Pods
+    - metadata:
+        name: jenkins-serviceaccount
+        namespace: jenkins
+        labels: {aws-usage: "cicd"}
+      attachPolicyARNs:
+        - "arn:aws:iam::484755436758:policy/ECRFullAccess"
+        - "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+    #Application Access to AWS Services
+    - metadata:
+        name: rds-access
+        namespace: develop
+        labels: {aws-usage: "application"}
+      attachPolicyARNs:
+        - "arn:aws:iam::aws:policy/AmazonRDSDataFullAccess"
+    - metadata:
+        name: rds-access
+        namespace: production
+        labels: { aws-usage: "application" }
+      attachPolicyARNs:
+        - "arn:aws:iam::aws:policy/AmazonRDSDataFullAccess"
+##    AWS Permission for cluster autoscaling
+#    - metadata:
+#        name: cluster-autoscaler
+#        namespace: kube-system
+#        labels: {aws-usage: "cluster-ops"}
+#      attachPolicy: # inline policy can be defined along with `attachPolicyARNs`
+#        Version: "2012-10-17"
+#        Statement:
+#          - Effect: Allow
+#            Action:
+#              - "autoscaling:DescribeAutoScalingGroups"
+#              - "autoscaling:DescribeAutoScalingInstances"
+#              - "autoscaling:DescribeLaunchConfigurations"
+#              - "autoscaling:DescribeTags"
+#              - "autoscaling:SetDesiredCapacity"
+#              - "autoscaling:TerminateInstanceInAutoScalingGroup"
+#              - "ec2:DescribeLaunchTemplateVersions"
+#            Resource: '*'
+#      roleName: eksctl-cluster-autoscaler-role
+nodeGroups:
+  - name: fridge-ng1
+    instanceType: t2.xlarge
+    desiredCapacity: 1
+    privateNetworking: true
+
+

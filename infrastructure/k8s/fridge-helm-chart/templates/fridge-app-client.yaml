@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app_client_name }}
+spec:
+  replicas: {{ .Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ .Values.app_client_name }}
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: {{ .Values.app_client_name }}
+    spec:
+      containers:
+        - name: {{ .Values.app_client_name }}
+          image: {{ .Values.awsAccountId}}.{{ .Values.image.repository.url }}/{{ .Values.app_client_name }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.app_client_name }}-service
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.app_client_name }}
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80

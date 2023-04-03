@@ -1,0 +1,25 @@
+#Default values
+replicaCount: 1
+awsAccountId: Id
+domain: "myvirtualfridge.net"
+app_client_name: fridge-app-client
+app_api_name: fridge-app-api
+imagePullSecrets:
+#do not use latest as image tag: must be unique
+image:
+  repository:
+    url: dkr.ecr.eu-central-1.amazonaws.com
+
+    #client: dkr.ecr.eu-central-1.amazonaws.com/fridge-app-client
+    #api: dkr.ecr.eu-central-1.amazonaws.com/fridge-app-api
+  tag: 0.0.1
+  pullPolicy: Always
+resources:
+#URL/Username/Password: set with helm install --set or helm upgrade --set
+#jdbc connects to db-service in Cluster which redirects to external database
+env:
+  database:
+    url: URL
+    username: Username
+    password: Password
+    jdbc_conn: jdbc_conn

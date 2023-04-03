@@ -1,0 +1,6 @@
+mutation{
+    updateShoppingList(input: {id: 10, name: "Neue Einkaufsliste" shoppingListItemInputs: [{productId: 1 quantity: 1 isAcquired: true}]}){
+        id
+        name
+    }
+}

@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test object of product 1`] = `
+Object {
+  "category": Array [],
+  "iconPath": "",
+  "items": Array [],
+  "minQuantity": -1,
+  "name": "Schokolade",
+  "nutritionalValue": Object {
+    "calories": 450,
+    "carbohydrates": 3,
+    "fat": 150,
+    "fiber": 0,
+    "nutritionScore": "E",
+    "protein": 4,
+    "salt": 3,
+    "saturatedFat": 4,
+    "sugar": 40,
+  },
+  "totalQuantity": 1,
+  "unit": "",
+}
+`;

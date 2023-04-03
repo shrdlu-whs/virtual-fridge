@@ -1,0 +1,59 @@
+  metadata:
+    labels:
+      some-label: some-label-value
+  spec:
+    # Service account that can deploy to all namespaces / access ECR and AWS Secrets
+    serviceAccountName: jenkins-serviceaccount
+    containers:
+      - name: maven
+        image: maven:3.6.3-openjdk-11
+        command:
+          - cat
+        tty: true
+        volumeMounts:
+          - mountPath: "/root/.m2/repository"
+            name: m2
+      - name: docker
+        image: docker:latest
+        command:
+          - cat
+        tty: true
+        env:
+          - name: AWS_DEFAULT_REGION
+            value: 'eu-central-1'
+        # Grant access to host docker daemon
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: docker-sock
+      - name: aws
+        image: banst/awscli
+        command:
+          - cat
+        tty: true
+        env:
+          - name: AWS_DEFAULT_REGION
+            value: 'eu-central-1'
+      - name: helm
+        image: dtzar/helm-kubectl
+        command:
+          - cat
+        tty: true
+      - name: yarn
+        image: mhart/alpine-node:11
+        command:
+          - cat
+        tty: true
+      - name: sonarjs
+        image: sonarsource/sonar-scanner-cli
+        command:
+          - cat
+        tty: true
+    volumes:
+      # Expose outer docker socket
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      # Persistent volume claim for maven local repository
+      - name: m2
+        persistentVolumeClaim:
+          claimName: m2

@@ -1,0 +1,165 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys a DB in a pair of private subnets spread over two availability zones
+  in an existing VPC. It deploys a single RDS
+  PostgreSQL master database in default mode.
+  If MultiAZ=true it creates a Multi-AZ replica database.
+  DB name, User & Password are read from AWS Parameter Store
+Parameters:
+  EnvironmentType:
+    Description: Type of environment to deploy to
+    Type: String
+    Default: "Development"
+  VpcId:
+    Description: ID of the VPC the RDS should be created in
+    Type: String
+  SubnetIdMaster:
+    Description: Id for the subnet in the RDS Master Availability Zone
+    Type: String
+  SubnetIdReplica:
+    Description: Id for the subnet in the RDS Read Replica Availability Zone
+    Type: String
+  DBInstanceIdentifier:
+    Type: String
+    Default: "virtual-fridge-db-team1-develop"
+  ReplicaInstanceIdentifier:
+    Type: String
+    Default: "virtual-fridge-db-team1-replica-develop"
+  DBEngine:
+    Type: String
+    Default: "postgres"
+  DBEngineVersion:
+    Type: String
+    Default: "12.4"
+  DBSourceRegion:
+    Type: String
+    Default: "eu-central-1"
+  DBInstanceClass:
+    Type: String
+    Default: "db.t2.small"
+  DBStorageType:
+    Type: String
+    Default: "gp2"
+  DBAllocatedStorage:
+    Type: Number
+    Default: 5
+  DBName:
+    Type: String
+    Default: "fridgeDbdevelop"
+  DBUser:
+    Type: String
+    Default: "{{resolve:ssm:/fridge_app_dev/master_username:1}}"
+  DBPassword:
+    Type: String
+    Default: "{{resolve:ssm-secure:/fridge_app_dev/master_password:3}}"
+    NoEcho: True
+  MultiAZ:
+    Description: Create MultiAZ failover for production
+    Type: String
+    Default: "false"
+    AllowedValues: ["true", "false"]
+Conditions:
+  UseProdCondition:
+    !Equals [ !Ref EnvironmentType, "Production" ]
+Resources:
+  RDSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Fridge DB Master+Replica
+      GroupName: !Join [ "", [RDSSecurityGroup, !Ref EnvironmentType]]
+      VpcId: !Ref VpcId
+  DBSubnetGroup:
+    Properties:
+      DBSubnetGroupDescription: DBSubnetGroup for RDS instances
+      SubnetIds:
+        - Ref: SubnetIdMaster
+        - Ref: SubnetIdReplica
+    Type: AWS::RDS::DBSubnetGroup
+  DBMasterInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier:
+        Ref: DBInstanceIdentifier
+      DBName:
+        !If [UseProdCondition, "fridgeDbproduction", !Ref DBName]
+      AllocatedStorage:
+        Ref: DBAllocatedStorage
+      DBInstanceClass:
+        Ref: DBInstanceClass
+      StorageType:
+        Ref: DBStorageType
+      Engine:
+        Ref: DBEngine
+      EngineVersion:
+        Ref: DBEngineVersion
+      MasterUsername:
+        !If [UseProdCondition, "{{resolve:ssm:/fridge_app_prod/master_username:2}}", !Ref DBUser]
+      MasterUserPassword:
+        !If [UseProdCondition, "{{resolve:ssm-secure:/fridge_app_prod/master_password:2}}", !Ref DBPassword]
+      PubliclyAccessible: False
+      Tags:
+        - Key: Project
+          Value: "Fridge App"
+      VPCSecurityGroups:
+        - !Ref RDSSecurityGroup
+      DBSubnetGroupName:
+        Ref: DBSubnetGroup
+      Port: 5432
+      MultiAZ:
+        !If [UseProdCondition, "true", !Ref MultiAZ]
+    DeletionPolicy: Snapshot
+  #TODO
+  #Security Group for all EKS Deployments needing access to the DB
+  #For implementation details see https://www.eksworkshop.com/beginner/115_sg-per-pod/10_secgroup/
+  #RDSAccessSG:
+  #  Type: AWS::EC2::SecurityGroup
+  #  Properties:
+  #    GroupDescription: Fridge DB Master+Replica
+  #    GroupName: RDSAccessSG
+  #    VpcId: !Ref VpcId
+
+  #Allow ingress for incoming traffic from RDSAccessSG(preliminarily set to all cluster ips)
+  "DBSecurityGroupIngress" :
+    {
+    "Type" : "AWS::EC2::SecurityGroupIngress",
+    "Properties" : {
+      "Description" : "Allow DB Access from Request SG To Port",
+      "FromPort" : 5432,
+      "GroupId" : { "Ref" : RDSSecurityGroup },
+      "CidrIp": 192.168.0.0/16,
+      "IpProtocol" : "TCP",
+      "ToPort" : 5432
+    }
+  }
+#  TODO Get NodeSecurityGroupId
+#  Allow pod communication with node group for DBAccessSG
+#  "NodeGroupSGIngressTCP":
+#      {
+#        "Type": "AWS::EC2::SecurityGroupIngress",
+#        "Properties": {
+#          "Description": "Allow pod communication with node group for DBAccessSG to enable DNS resolution",
+#          "FromPort": 53,
+#          "GroupId": { "Ref": NodeGroupSGId },
+#          "SourceSecurityGroupId": !Ref RDSAccessSG,
+#          "IpProtocol": "TCP",
+#          "ToPort": 53
+#        }
+#      }
+#  "NodeGroupSGIngressUDP":
+#    {
+#      "Type": "AWS::EC2::SecurityGroupIngress",
+#      "Properties": {
+#        "Description": "Allow pod communication with node group for DBAccessSG to enable DNS resolution",
+#        "FromPort": 53,
+#        "GroupId": { "Ref": NodeGroupSGId },
+#        "SourceSecurityGroupId": !Ref RDSAccessSG,
+#        "IpProtocol": "UDP",
+#        "ToPort": 53
+#      }
+#    }
+Outputs:
+  EndpointMaster:
+    Description: "Endpoint of the newly created RDS PostgreSQL master"
+    Value: !GetAtt DBMasterInstance.Endpoint.Address
+  PortDB:
+    Description: "Port of the newly created RDS PostgreSQL master and replica"
+    Value: !GetAtt DBMasterInstance.Endpoint.Port

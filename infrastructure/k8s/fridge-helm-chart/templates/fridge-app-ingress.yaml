@@ -1,0 +1,132 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: fridge-gateway
+
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: HTTP
+      hosts:
+        - "*.{{ .Values.domain}}"
+
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      tls:
+        httpsRedirect: true
+      hosts:
+       - "*.{{ .Values.domain}}"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: fridge-client-{{ .Release.Namespace}}
+spec:
+  hosts:
+    - "{{ .Release.Namespace}}.{{ .Values.domain}}"
+  gateways:
+    - fridge-gateway
+  http:
+    - match:
+        - uri:
+            exact: /
+        - uri:
+            exact: /#/
+        - uri:
+            exact: /#/signIn
+        - uri:
+            exact: /#/register
+        - uri:
+            exact: /#/products
+        - uri:
+            prefix: /static
+        - uri:
+            prefix: /i18n
+        - uri:
+            prefix: /images
+      route:
+        - destination:
+            #Host format: svcname.namespace.svc.cluster.local
+            host: {{ .Values.app_client_name }}-service.{{ .Release.Namespace}}.svc.cluster.local
+            port:
+              number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: fridge-api-{{ .Release.Namespace}}
+spec:
+  hosts:
+    - "{{ .Release.Namespace}}.{{ .Values.domain}}"
+  gateways:
+    - fridge-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /api/items
+        - uri:
+            prefix: /api/products
+        - uri:
+            prefix: /api/categories
+        - uri:
+            prefix: /api/hello
+        - uri:
+            prefix: /api/nutritionalValues
+        - uri:
+            prefix: /api/shoppingLists
+        - uri:
+            prefix: /api/recipes
+      route:
+        - destination:
+            host: {{ .Values.app_api_name }}-service.{{ .Release.Namespace}}.svc.cluster.local
+            port:
+              number: 5000
+
+# Circuit Breaker for Client service in all namespaces
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ .Values.app_client_name }}-service.{{ .Release.Namespace}}
+spec:
+  host: {{ .Values.app_client_name }}-service.{{ .Release.Namespace}}.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 1
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutiveErrors: 1
+      interval: 1s
+      baseEjectionTime: 3m
+      maxEjectionPercent: 100
+
+# Circuit Breaker for Api service in all namespaces
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ .Values.app_api_name }}-service.{{ .Release.Namespace}}
+spec:
+  host: {{ .Values.app_api_name }}-service.{{ .Release.Namespace}}.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 1
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutiveErrors: 1
+      interval: 1s
+      baseEjectionTime: 3m
+      maxEjectionPercent: 100
+

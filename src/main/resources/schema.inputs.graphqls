@@ -1,0 +1,132 @@
+# product inputs --------------------------------------------------------------
+input createProductInput{
+    name: String!
+    iconPath: String
+    categoryIds:[Long]
+    totalQuantity: Int!
+    minQuantity: Int
+    unitDefaultQuantity: Int!
+    unit: String!
+    itemInputs:[createItemInput]
+    nutritionalValueInput: createNutritionalValueInput!
+}
+
+input updateProductInput{
+    id: Long!
+    name: String
+    iconPath: String
+    categoryIds:[Long]
+    totalQuantity: Int
+    minQuantity: Int
+    unitDefaultQuantity:Int
+    unit: String
+    itemInputs:[updateItemInput]
+    nutritionalValueInput: updateNutritionalValueInput
+}
+
+input createItemInput{
+    barcode: String
+    expirationDate:LocalDateTime!
+}
+
+input updateItemInput{
+    id: Int
+    barcode: String
+    expirationDate:LocalDateTime
+}
+
+input createNutritionalValueInput{
+    nutritionScore: String!
+    calories: Int
+    protein: Int
+    carbohydrates: Int
+    sugar: Int
+    fat: Int
+    saturatedFat: Int
+    fiber: Int
+    salt: Int
+}
+
+input updateNutritionalValueInput{
+    nutritionScore: String
+    calories: Int
+    protein: Int
+    carbohydrates: Int
+    sugar: Int
+    fat: Int
+    saturatedFat: Int
+    fiber: Int
+    salt: Int
+}
+
+# category inputs --------------------------------------------------------------
+input createCategoryInput{
+    name: String!
+}
+
+input updateCategoryInput{
+    id: Long!
+    name: String!
+}
+
+# recipe inputs --------------------------------------------------------------
+input createRecipeInput{
+    name: String!
+    shortDescription: String
+    instructions: String
+    iconPath: String
+    recipeItemInputs:[createRecipeItemInput]
+    hyperlink: String
+    favorite: Boolean
+    expectedTime: Long
+    difficulty: difficulty
+}
+
+input updateRecipeInput{
+    id: Long!
+    name: String!
+    shortDescription: String
+    instructions: String
+    iconPath: String
+    recipeItemInputs:[updateRecipeItemInput]
+    hyperlink: String
+    favorite: Boolean
+    expectedTime: Long
+    difficulty: difficulty
+}
+
+input createRecipeItemInput{
+    productId: Long!
+    quantity: Int!
+}
+
+input updateRecipeItemInput{
+    id: Long
+    productId: Long
+    quantity: Int
+}
+
+# shoppingList inputs --------------------------------------------------------------
+input createShoppingListInput{
+    name: String!
+    shoppingListItemInputs:[createShoppingListItemInput]
+}
+
+input updateShoppingListInput{
+    id: Long!
+    name: String!
+    shoppingListItemInputs:[updateShoppingListItemInput]
+}
+
+input createShoppingListItemInput{
+    productId: Long!
+    quantity: Int!
+    isAcquired: Boolean!
+}
+
+input updateShoppingListItemInput{
+    id:Long
+    productId: Long
+    quantity: Int
+    isAcquired: Boolean
+}

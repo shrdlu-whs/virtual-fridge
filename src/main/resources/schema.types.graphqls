@@ -1,0 +1,74 @@
+type recipe{
+    id: Long,
+    userId: String,
+    name: String,
+    shortDescription: String,
+    instructions: String,
+    iconPath: String,
+    recipeItems:[recipeItem],
+    hyperlink: String,
+    favorite: Boolean,
+    expectedTime: Long,
+    difficulty: difficulty,
+    created: LocalDateTime
+}
+
+type recipeItem{
+    id: Long,
+    product: product,
+    quantity: Int
+}
+
+type shoppingList{
+    id: Long,
+    userId: String,
+    name: String,
+    shoppingListItems:[shoppingListItem],
+    created: LocalDateTime
+}
+
+type shoppingListItem{
+    id: Long,
+    product: product,
+    quantity: Int
+    isAcquired: Boolean
+}
+
+type product{
+    id: Long,
+    userId: String,
+    name: String,
+    iconPath: String,
+    category:[category],
+    totalQuantity: Int,
+    minQuantity: Int,
+    unitDefaultQuantity: Int,
+    unit: String
+    items:[item],
+    nutritionalValue: nutritionalValue
+}
+
+type category{
+    id: Int,
+    name: String
+}
+
+type nutritionalValue{
+    id: Int,
+    nutritionScore: String,
+    calories: Int,
+    protein: Int,
+    carbohydrates: Int,
+    sugar: Int
+    fat: Int,
+    saturatedFat: Int,
+    fiber: Int,
+    salt: Int
+}
+
+type item{
+    id: Int,
+    barcode: String,
+    expirationDate:LocalDateTime,
+    created:LocalDateTime
+}

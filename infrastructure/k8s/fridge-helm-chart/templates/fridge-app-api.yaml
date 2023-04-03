@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app_api_name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.app_api_name }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: {{ .Values.app_api_name }}
+    spec:
+      serviceAccountName: rds-access
+      containers:
+        - name: {{ .Values.app_api_name }}
+          image: {{ .Values.awsAccountId }}.{{ .Values.image.repository.url }}/{{ .Values.app_api_name }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 5000
+          env:
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: {{ .Release.Name }}-auth
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+               secretKeyRef:
+                key: password
+                name: {{ .Release.Name }}-auth
+            - name: SPRING_DATASOURCE_URL
+              value: {{ .Values.env.database.jdbc_conn}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.app_api_name }}-service
+spec:
+  type: ClusterIP              # Exposes the service in the cluster only
+  selector:
+    app: {{ .Values.app_api_name }}
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      name: http
+
+

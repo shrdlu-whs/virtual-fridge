@@ -1,0 +1,6 @@
+mutation{
+    createShoppingList(input: {name: "Einkaufsliste" shoppingListItemInputs: [{productId: 1 quantity: 1 isAcquired: false}]}){
+        id
+        name
+    }
+}

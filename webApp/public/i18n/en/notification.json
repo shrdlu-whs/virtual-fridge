@@ -1,0 +1,63 @@
+{
+    "success": {
+        "title": {},
+        "description": {}
+    },
+    "error": {
+        "unknown_error": "Unknown error occurred",
+        "title": {
+            "register": "Failed to register",
+            "signIn": "Failed to sign in",
+            "signOut": "Failed to sign out",
+            "fetch_user": "Failed to get user information",
+            "forgot_password": "",
+            "forgot_password_submit": "",
+            "change_password": "",
+            "get_products": "Failed to query products",
+            "get_product": "Failed to query the product",
+            "add_product": "Adding the product failed",
+            "update_product": "Update of the product failed",
+            "delete_product" : "Deletion of the product failed",
+            "get_recipes": "Failed to query recipes",
+            "get_recipe": "Failed to query recipe",
+            "add_recipe" : "Adding the recipe failed",
+            "update_recipe": "Update of the recipe failed",
+            "delete_recipe": "Deletion of the recipe failed"
+        },
+        "description": {
+            "register": "Failed when trying to register the user",
+            "signIn": "Failed when trying to sign in the user",
+            "signOut": "Failed when trying to sign out the user",
+            "fetch_user": "Please check your network connection!",
+            "forgot_password": "",
+            "forgot_password_submit": "",
+            "change_password": "",
+            "get_products": "Error when querying product data",
+            "get_product": "Error when querying the product",
+            "add_product": "Error when adding the product",
+            "update_product": "Error when updating the product",
+            "delete_product" : "Error when deleting the product",
+            "get_recipes": "Error when querying recipe data",
+            "get_recipe": "Error when querying the recipe",
+            "add_recipe" : "Error when adding the recipe",
+            "update_recipe": "Error when updating the recipe",
+            "delete_recipe": "Error when deleting the recipe"
+        }
+    },
+    "warning": {
+        "title": {
+          "token_expired": "The session has expired"
+        },
+        "description": {
+          "token_expired": "The session is no longer valid, please signin again"
+        }
+      },
+    "info": {
+      "title": {
+
+      },
+      "description": {
+
+      }
+    }
+}

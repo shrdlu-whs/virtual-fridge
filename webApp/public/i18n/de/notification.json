@@ -1,0 +1,63 @@
+{
+    "success": {
+        "title": {},
+        "description": {}
+    },
+    "error": {
+        "unknown_error": "Unbekannter Fehler aufgetreten",
+        "title": {
+            "register": "Registrieren fehlgeschlagen",
+            "signIn": "Anmelden fehlgeschlagen",
+            "signOut": "Ausloggen fehlgeschlagen",
+            "fetch_user": "Session Abfrage fehlgeschlagen",
+            "forgot_password": "",
+            "forgot_password_submit": "",
+            "change_password": "",
+            "get_products": "Abfrage von Produkten fehlgeschlagen",
+            "get_product": "Abfrage des Produktes fehlgeschlagen",
+            "add_product": "Hinzufügen des Produktes fehlgeschlagen",
+            "update_product": "Aktualisieren des Produktes fehlgeschlagen",
+            "delete_product" : "Löschen des Produktes fehlgeschlagen",
+            "get_recipes": "Abfrage von Rezepten fehlgeschlagen",
+            "get_recipe": "Abfrage des Rezeptes fehlgeschlagen",
+            "add_recipe" : "Hinzufügen des Rezeptes fehlgeschlagen",
+            "update_recipe": "Aktualisieren des Rezeptes fehlgeschlagen",
+            "delete_recipe": "Löschen des Rezeptes fehlgeschlagen"
+        },
+        "description": {
+            "register": "Fehler beim Versuch, den Benutzer zu registrieren",
+            "signIn": "Fehler beim Versuch, den Benutzer anzumelden",
+            "signOut": "Fehler beim Abmelden des Benutzers",
+            "fetch_user": "Bitte überprüfen Sie Ihre Netzwerkverbindung!",
+            "forgot_password": "",
+            "forgot_password_submit": "",
+            "change_password": "",
+            "get_products": "Fehler bei der Abfrage von Produktdaten",
+            "get_product": "Fehler bei der Abfrage des Produktes",
+            "add_product": "Fehler beim hinzufügen des Produktes",
+            "update_product": "Fehler beim aktualisieren des Produktes",
+            "delete_product" : "Fehler beim löschen des Produktes",
+            "get_recipes": "Fehler bei der Abfrage von Rezeptdaten",
+            "get_recipe": "Fehler bei der Abfrage des Rezeptes",
+            "add_recipe" : "Fehler beim hinzufügen des Rezeptes",
+            "update_recipe": "Fehler beim aktualisieren des Rezeptes",
+            "delete_recipe": "Fehler beim löschen des Rezeptes"
+        }
+    },
+    "warning": {
+      "title": {
+        "token_expired": "Die Session ist abgelaufen"
+      },
+      "description": {
+        "token_expired": "Die Session ist nicht mehr gültig, bitte melden Sie sich erneut an"
+      }
+    },
+    "info": {
+      "title": {
+
+      },
+      "description": {
+
+      }
+    }
+}

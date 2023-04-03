@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test object of shoppinglist 1`] = `
+Object {
+  "category": Array [],
+  "difficulty": 0,
+  "expectedTime": "00:05:00",
+  "hyperlink": "https://www.someimage.net",
+  "instructions": "",
+  "name": "Pommes",
+  "recipeItems": Array [],
+  "shortDescription": "",
+}
+`;

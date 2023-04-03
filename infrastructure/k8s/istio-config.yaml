@@ -1,0 +1,35 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  components:
+    ingressGateways:
+      - namespace: istio-system
+        name: istio-ingressgateway
+        enabled: true
+        k8s:
+          service:
+            ports:
+              - port: 15021
+                targetPort: 15021
+                name: status-port
+              - port: 8080
+                targetPort: 8080
+                name: jenkins
+              - port: 443
+                targetPort: 8443
+                name: https
+              - port: 80
+                targetPort: 8090
+                name: http
+              - port: 15012
+                targetPort: 15012
+                name: tcp-istiod
+              - port: 15443
+                targetPort: 15443
+                name: tls
+          serviceAnnotations:
+          # Note that the backend talks over HTTP.
+            service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+            service.beta.kubernetes.io/aws-load-balancer-ssl-cert:  arn:aws:acm:eu-central-1:484755436758:certificate/2efdfa7e-f032-4116-8695-96e35dbacf16
+            # Activate SSL on ports 443 and 8080"
+            service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443,8080"

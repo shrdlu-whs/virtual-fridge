@@ -1,0 +1,56 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-all
+  namespace: {{ .Release.Namespace}}
+spec:
+  {}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: jenkins-gui
+  namespace: {{ .Release.Namespace}}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: jenkins-controller
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: ["cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account"]
+      to:
+        - operation:
+            ports: ["8080"]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: jenkins-agents
+  namespace: {{ .Release.Namespace}}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: jenkins-controller
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            namespaces: ["{{ .Release.Namespace}}"]
+      to:
+        - operation:
+            ports: ["50000"]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: istio-system
+  namespace: {{ .Release.Namespace}}
+spec:
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            namespaces: ["istio-system"]
+---
